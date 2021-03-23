@@ -95,7 +95,7 @@ anotherFunc()
 anotherFunc.call(undefined) -> 非严格模式undefined会默认绑定为window
 
 ### call、apply、bind调用模式
-函数调用对象由call、apply、bind第一个参数指定，也就是你自己自定义函数调用的对象，在非严格模式下第一个参数为undefined、null时this绑定到window上。三者区别主要为call和apply是除第一个参数的传参方式不同，call为普通传参，apply第二参数为数组传参，也因此call的性能会好一点。bind跟前两者不同在于它会返回一个this被更改指定后的新函数，这个函数调用或者new时this必指向你绑定的对象。
+函数调用对象由call、apply、bind第一个参数指定，也就是你自己自定义函数调用的对象，在非严格模式下第一个参数为undefined、null时this绑定到window上。三者区别主要为call和apply是除第一个参数的传参方式不同，call为普通传参，apply第二参数为数组传参，也因此call的性能会好一点。bind跟前两者不同在于它会返回一个this被更改指定后的新函数，这个函数调用时this必指向你绑定的对象，但如果new这个返回的函数this就会被指向新对象了。
 
 ### 构造函数调用
 ```js
