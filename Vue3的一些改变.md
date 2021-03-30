@@ -123,7 +123,7 @@ app.component('custom-form', {
 11、v-slot可以缩写为#，例如 v-slot:header === #header，想使用缩写就必须采用具名插槽，默认插槽要写为#default
 
 12、**提供与注入(provide and inject)**  
-深层的子组件可以直接注入顶层父组件的属性，而不用再用prop一层一层繁琐地传下去了。当然这个只是只读，不要想着去修改它直接改变父组件的值。
+深层的子组件可以直接注入顶层父组件的属性，而不用再用prop一层一层繁琐地传下去了。
 ```js
 const app = Vue.createApp({})
 
@@ -165,6 +165,8 @@ app.component('todo-list', {
   }
 })
 ```
+同时，为了防止provide被inject的组件修改，建议用readonly函数处理下属性传递。
+
 13、**异步组件引入方式更换**
 需要包裹多一层Vue.defineAsyncComponent，当然你可以将{ defineAsyncComponent }解构出来
 ```js
@@ -206,3 +208,44 @@ app.component('modal-button', {
   }
 })
 ```
+
+15、**组合式API**  
+将相似的逻辑关注点进行提取整合，比如获取列表和赋值列表这一套操作就可以组合。有点类似于函数式编程的函数组合，将相似的逻辑关注点组合成一个功能模块（包括定义响应式属性、绑定时间钩子等），预定义好各个逻辑功能，在执行完毕后暴露所需要的值，直接取用就OK了，这样的代码逻辑块十分清晰明朗，可能小项目你没啥感觉，但遇到特大项目就很有用了，做过稍大一点的项目你是不是会觉得代码很杂，变量啊、方法啊贼多，找来找去，这就是组合式API诞生的原因。组合式API的一个大概构建过程：  
+
+1、将某些逻辑关注点相似的变量、操作进行整合，放到setup函数中。  
+PS：
+- setup函数运行在beforeCreate前，也就是vue还没实例，因此没有this，只有props和context可以使用，props只能拿默认值，setup通过return一个对象供后续Vue实例选项式API使用，会将这个对象并入到Vue实例中去，通过this调用对应属性，有点提预定义一些data属性、method方法的味道。  
+- setup返回的对象中的refs和reactive对象会被自动解开
+```js
+setup() {
+  const readersNumber = ref(0)
+  const book = reactive({ title: 'Vue 3 Guide' })
+
+  // expose to template
+  return {
+    readersNumber,
+    book
+  }
+  /*{
+      readersNumber:0 //不能通过value取值了
+      book：{
+        title:'Vue3 Guide'
+      }hi 
+  }*/
+}
+```
+
+2、设置响应式变量，通过ref或者reactive函数自己手动定义，ref相当于一个包装函数，主要是为了将Number和String这类基本类型的值包装为引用类型，从而能够实现响应式，如果是引用类型建议用reactive函数。  
+
+3、定义方法以及绑定时间钩子执行方法等，setup里的时间钩子绑定有点像事件监听，onMounted、onUpdated等,因为其就在beforeCreate时间钩子前，所以没提供onBeforeCreate和onCreated,也可以设置watch监听，形式为
+```js
+watch(变量名，(newValue,oldValue)=>{})
+```
+4、如果你想解构props，通过 toRefs(props) 将props的解构行为变为响应式，否则解构使用响应式会失效
+
+5、将统一逻辑关注点的代码抽离成一个单独JS文件，并暴露所需要的相关属性供后面选项式API使用
+
+6、众观一看，一个个逻辑功能块，清晰明朗，方便多人员开发。
+
+详细请自行查看组合式API章节
+- https://vue3js.cn/docs/zh/guide/composition-api-introduction.html#%E4%BB%80%E4%B9%88%E6%98%AF%E7%BB%84%E5%90%88%E5%BC%8F-api
