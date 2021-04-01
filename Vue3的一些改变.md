@@ -123,7 +123,7 @@ app.component('custom-form', {
 11、v-slot可以缩写为#，例如 v-slot:header === #header，想使用缩写就必须采用具名插槽，默认插槽要写为#default
 
 12、**提供与注入(provide and inject)**  
-深层的子组件可以直接注入顶层父组件的属性，而不用再用prop一层一层繁琐地传下去了。
+好吧，其实这个是Vue2.2就有的东西，但一直没注意，直到最近学React的Provider和Vue3再给它强调了波，这里拉出来提一下，它的作用是深层的子组件可以直接注入顶层父组件的属性，而不用再用prop一层一层繁琐地传下去了。
 ```js
 const app = Vue.createApp({})
 
