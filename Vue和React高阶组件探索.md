@@ -108,6 +108,7 @@ function WithConsole (WrappedComponent) {
 
 ## Hooks
 如今，React最新版推出**Hooks**
+
 1、它可以让你在class以外使用state和其他React特性。  
 噢！想到了什么？对React函数式组件也可以有state了。
 
